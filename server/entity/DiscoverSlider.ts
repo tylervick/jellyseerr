@@ -1,3 +1,4 @@
+import type { SortOptions } from '@server/api/themoviedb';
 import type { DiscoverSliderType } from '@server/constants/discover';
 import { defaultSliders } from '@server/constants/discover';
 import { getRepository } from '@server/datasource';
@@ -54,6 +55,9 @@ class DiscoverSlider {
 
   @Column({ nullable: true })
   public data?: string;
+
+  @Column({ nullable: true })
+  public sort?: SortOptions;
 
   @CreateDateColumn()
   public createdAt: Date;

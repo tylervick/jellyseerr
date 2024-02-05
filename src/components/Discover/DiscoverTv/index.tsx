@@ -8,11 +8,11 @@ import {
   prepareFilterValues,
 } from '@app/components/Discover/constants';
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
+import TvSortOptions from '@app/components/Discover/TvSortOptions';
 import useDiscover from '@app/hooks/useDiscover';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import Error from '@app/pages/_error';
 import { BarsArrowDownIcon, FunnelIcon } from '@heroicons/react/24/solid';
-import type { SortOptions as TMDBSortOptions } from '@server/api/themoviedb';
 import type { TvResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -22,26 +22,7 @@ const messages = defineMessages({
   discovertv: 'Series',
   activefilters:
     '{count, plural, one {# Active Filter} other {# Active Filters}}',
-  sortPopularityAsc: 'Popularity Ascending',
-  sortPopularityDesc: 'Popularity Descending',
-  sortFirstAirDateAsc: 'First Air Date Ascending',
-  sortFirstAirDateDesc: 'First Air Date Descending',
-  sortTmdbRatingAsc: 'TMDB Rating Ascending',
-  sortTmdbRatingDesc: 'TMDB Rating Descending',
-  sortTitleAsc: 'Title (A-Z) Ascending',
-  sortTitleDesc: 'Title (Z-A) Descending',
 });
-
-const SortOptions: Record<string, TMDBSortOptions> = {
-  PopularityAsc: 'popularity.asc',
-  PopularityDesc: 'popularity.desc',
-  FirstAirDateAsc: 'first_air_date.asc',
-  FirstAirDateDesc: 'first_air_date.desc',
-  TmdbRatingAsc: 'vote_average.asc',
-  TmdbRatingDesc: 'vote_average.desc',
-  TitleAsc: 'original_title.asc',
-  TitleDesc: 'original_title.desc',
-} as const;
 
 const DiscoverTv = () => {
   const intl = useIntl();
@@ -85,30 +66,7 @@ const DiscoverTv = () => {
               value={preparedFilters.sortBy}
               onChange={(e) => updateQueryParams('sortBy', e.target.value)}
             >
-              <option value={SortOptions.PopularityDesc}>
-                {intl.formatMessage(messages.sortPopularityDesc)}
-              </option>
-              <option value={SortOptions.PopularityAsc}>
-                {intl.formatMessage(messages.sortPopularityAsc)}
-              </option>
-              <option value={SortOptions.FirstAirDateDesc}>
-                {intl.formatMessage(messages.sortFirstAirDateDesc)}
-              </option>
-              <option value={SortOptions.FirstAirDateAsc}>
-                {intl.formatMessage(messages.sortFirstAirDateAsc)}
-              </option>
-              <option value={SortOptions.TmdbRatingDesc}>
-                {intl.formatMessage(messages.sortTmdbRatingDesc)}
-              </option>
-              <option value={SortOptions.TmdbRatingAsc}>
-                {intl.formatMessage(messages.sortTmdbRatingAsc)}
-              </option>
-              <option value={SortOptions.TitleAsc}>
-                {intl.formatMessage(messages.sortTitleAsc)}
-              </option>
-              <option value={SortOptions.TitleDesc}>
-                {intl.formatMessage(messages.sortTitleDesc)}
-              </option>
+              <TvSortOptions />
             </select>
           </div>
           <FilterSlideover

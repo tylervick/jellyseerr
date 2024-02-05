@@ -1,6 +1,8 @@
 import Button from '@app/components/Common/Button';
 import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
+import MovieSortOptions from '@app/components/Discover/MovieSortOptions';
+import TvSortOptions from '@app/components/Discover/TvSortOptions';
 import MediaSlider from '@app/components/MediaSlider';
 import { WatchProviderSelector } from '@app/components/Selector';
 import { encodeURIExtraParams } from '@app/hooks/useDiscover';
@@ -229,7 +231,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_MOVIE_KEYWORD,
       title: intl.formatMessage(sliderTitles.tmdbmoviekeyword),
       dataUrl: '/api/v1/discover/movies',
-      params: 'keywords=$value',
+      params: 'keywords=$value&sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbkeywordid),
     },
@@ -237,7 +239,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_TV_KEYWORD,
       title: intl.formatMessage(sliderTitles.tmdbtvkeyword),
       dataUrl: '/api/v1/discover/tv',
-      params: 'keywords=$value',
+      params: 'keywords=$value&sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbkeywordid),
     },
@@ -245,6 +247,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_MOVIE_GENRE,
       title: intl.formatMessage(sliderTitles.tmdbmoviegenre),
       dataUrl: '/api/v1/discover/movies/genre/$value',
+      params: 'sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbgenreid),
     },
@@ -252,6 +255,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_TV_GENRE,
       title: intl.formatMessage(sliderTitles.tmdbtvgenre),
       dataUrl: '/api/v1/discover/tv/genre/$value',
+      params: 'sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbgenreid),
     },
@@ -259,6 +263,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_STUDIO,
       title: intl.formatMessage(sliderTitles.tmdbstudio),
       dataUrl: '/api/v1/discover/movies/studio/$value',
+      params: 'sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbstudio),
     },
@@ -266,6 +271,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_NETWORK,
       title: intl.formatMessage(sliderTitles.tmdbnetwork),
       dataUrl: '/api/v1/discover/tv/network/$value',
+      params: 'sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbnetwork),
     },
@@ -273,7 +279,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_SEARCH,
       title: intl.formatMessage(sliderTitles.tmdbsearch),
       dataUrl: '/api/v1/search',
-      params: 'query=$value',
+      params: 'query=$value&sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
       dataPlaceholderText: intl.formatMessage(messages.providetmdbsearch),
     },
@@ -281,14 +287,16 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       type: DiscoverSliderType.TMDB_MOVIE_STREAMING_SERVICES,
       title: intl.formatMessage(sliderTitles.tmdbmoviestreamingservices),
       dataUrl: '/api/v1/discover/movies',
-      params: 'watchRegion=$regionValue&watchProviders=$providersValue',
+      params:
+        'watchRegion=$regionValue&watchProviders=$providersValue&sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
     },
     {
       type: DiscoverSliderType.TMDB_TV_STREAMING_SERVICES,
       title: intl.formatMessage(sliderTitles.tmdbtvstreamingservices),
       dataUrl: '/api/v1/discover/tv',
-      params: 'watchRegion=$regionValue&watchProviders=$providersValue',
+      params:
+        'watchRegion=$regionValue&watchProviders=$providersValue&sortBy=$sort',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
     },
   ];
@@ -301,11 +309,13 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
               sliderType: slider.type,
               title: slider.title,
               data: slider.data,
+              sort: slider.sort,
             }
           : {
               sliderType: DiscoverSliderType.TMDB_MOVIE_KEYWORD,
               title: '',
               data: '',
+              sort: '',
             }
       }
       validationSchema={CreateSliderSchema}
@@ -317,12 +327,14 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
               type: Number(values.sliderType),
               title: values.title,
               data: values.data,
+              sort: values.sort,
             });
           } else {
             await axios.post('/api/v1/settings/discover/add', {
               type: Number(values.sliderType),
               title: values.title,
               data: values.data,
+              sort: values.sort,
             });
           }
 
@@ -477,6 +489,30 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
             );
         }
 
+        let sortInput: React.ReactNode;
+        switch (activeOption?.type) {
+          case DiscoverSliderType.POPULAR_TV:
+          case DiscoverSliderType.TMDB_NETWORK:
+          case DiscoverSliderType.TMDB_TV_GENRE:
+          case DiscoverSliderType.TMDB_TV_KEYWORD:
+          case DiscoverSliderType.TMDB_TV_STREAMING_SERVICES:
+          case DiscoverSliderType.NETWORKS:
+          case DiscoverSliderType.TV_GENRES:
+          case DiscoverSliderType.UPCOMING_TV:
+            sortInput = (
+              <Field as="select" id="sort" name="sort">
+                <TvSortOptions />
+              </Field>
+            );
+            break;
+          default:
+            sortInput = (
+              <Field as="select" id="sort" name="sort">
+                <MovieSortOptions />
+              </Field>
+            );
+        }
+
         return (
           <Form data-testid="create-discover-option-form">
             <div className="flex flex-col space-y-2 text-gray-100">
@@ -497,6 +533,12 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
                 touched.title &&
                 typeof errors.title === 'string' && (
                   <div className="error">{errors.title}</div>
+                )}
+              {sortInput}
+              {errors.sort &&
+                touched.sort &&
+                typeof errors.sort === 'string' && (
+                  <div className="error">{errors.sort}</div>
                 )}
               {dataInput}
               {errors.data &&
@@ -551,6 +593,7 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
                             '$providersValue',
                             encodeURIExtraParams(values?.data.split(',')[1])
                           )
+                          .replace('$sort', encodeURIExtraParams(values.sort))
                       : activeOption.params?.replace(
                           '$value',
                           encodeURIExtraParams(values.data)

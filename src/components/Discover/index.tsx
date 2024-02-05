@@ -290,10 +290,12 @@ const Discover = () => {
                 url="/api/v1/discover/movies"
                 extraParams={
                   slider.data
-                    ? `keywords=${encodeURIExtraParams(slider.data)}`
+                    ? `keywords=${encodeURIExtraParams(
+                        slider.data
+                      )}&sortBy=${encodeURIExtraParams(slider.sort)}`
                     : ''
                 }
-                linkUrl={`/discover/movies?keywords=${slider.data}`}
+                linkUrl={`/discover/movies?keywords=${slider.data}&sortBy=${slider.sort}`}
               />
             );
             break;

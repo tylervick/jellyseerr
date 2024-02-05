@@ -31,6 +31,7 @@ discoverSettingRoutes.post('/', async (req, res) => {
         existingSlider.title = slider.title;
         existingSlider.data = slider.data;
         existingSlider.type = slider.type;
+        existingSlider.sort = slider.sort;
       }
 
       await sliderRepository.save(existingSlider);
@@ -39,6 +40,7 @@ discoverSettingRoutes.post('/', async (req, res) => {
         isBuiltIn: false,
         data: slider.data,
         title: slider.title,
+        sort: slider.sort,
         enabled: slider.enabled,
         order: x,
         type: slider.type,
@@ -59,6 +61,7 @@ discoverSettingRoutes.post('/add', async (req, res) => {
     isBuiltIn: false,
     data: slider.data,
     title: slider.title,
+    sort: slider.sort,
     enabled: false,
     order: -1,
     type: slider.type,
@@ -94,6 +97,7 @@ discoverSettingRoutes.put('/:sliderId', async (req, res, next) => {
       existingSlider.title = slider.title;
       existingSlider.data = slider.data;
       existingSlider.type = slider.type;
+      existingSlider.sort = slider.sort;
     }
 
     await sliderRepository.save(existingSlider);

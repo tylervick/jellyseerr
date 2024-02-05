@@ -8,11 +8,11 @@ import {
   prepareFilterValues,
 } from '@app/components/Discover/constants';
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
+import MovieSortOptions from '@app/components/Discover/MovieSortOptions';
 import useDiscover from '@app/hooks/useDiscover';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import Error from '@app/pages/_error';
 import { BarsArrowDownIcon, FunnelIcon } from '@heroicons/react/24/solid';
-import type { SortOptions as TMDBSortOptions } from '@server/api/themoviedb';
 import type { MovieResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -22,26 +22,7 @@ const messages = defineMessages({
   discovermovies: 'Movies',
   activefilters:
     '{count, plural, one {# Active Filter} other {# Active Filters}}',
-  sortPopularityAsc: 'Popularity Ascending',
-  sortPopularityDesc: 'Popularity Descending',
-  sortReleaseDateAsc: 'Release Date Ascending',
-  sortReleaseDateDesc: 'Release Date Descending',
-  sortTmdbRatingAsc: 'TMDB Rating Ascending',
-  sortTmdbRatingDesc: 'TMDB Rating Descending',
-  sortTitleAsc: 'Title (A-Z) Ascending',
-  sortTitleDesc: 'Title (Z-A) Descending',
 });
-
-const SortOptions: Record<string, TMDBSortOptions> = {
-  PopularityAsc: 'popularity.asc',
-  PopularityDesc: 'popularity.desc',
-  ReleaseDateAsc: 'release_date.asc',
-  ReleaseDateDesc: 'release_date.desc',
-  TmdbRatingAsc: 'vote_average.asc',
-  TmdbRatingDesc: 'vote_average.desc',
-  TitleAsc: 'original_title.asc',
-  TitleDesc: 'original_title.desc',
-} as const;
 
 const DiscoverMovies = () => {
   const intl = useIntl();
@@ -87,30 +68,7 @@ const DiscoverMovies = () => {
               value={preparedFilters.sortBy}
               onChange={(e) => updateQueryParams('sortBy', e.target.value)}
             >
-              <option value={SortOptions.PopularityDesc}>
-                {intl.formatMessage(messages.sortPopularityDesc)}
-              </option>
-              <option value={SortOptions.PopularityAsc}>
-                {intl.formatMessage(messages.sortPopularityAsc)}
-              </option>
-              <option value={SortOptions.ReleaseDateDesc}>
-                {intl.formatMessage(messages.sortReleaseDateDesc)}
-              </option>
-              <option value={SortOptions.ReleaseDateAsc}>
-                {intl.formatMessage(messages.sortReleaseDateAsc)}
-              </option>
-              <option value={SortOptions.TmdbRatingDesc}>
-                {intl.formatMessage(messages.sortTmdbRatingDesc)}
-              </option>
-              <option value={SortOptions.TmdbRatingAsc}>
-                {intl.formatMessage(messages.sortTmdbRatingAsc)}
-              </option>
-              <option value={SortOptions.TitleAsc}>
-                {intl.formatMessage(messages.sortTitleAsc)}
-              </option>
-              <option value={SortOptions.TitleDesc}>
-                {intl.formatMessage(messages.sortTitleDesc)}
-              </option>
+              <MovieSortOptions />
             </select>
           </div>
           <FilterSlideover
